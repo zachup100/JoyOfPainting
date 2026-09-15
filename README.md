@@ -6,7 +6,7 @@ Available by [bondarenkoartur.github.io/JoyOfPainting](https://bondarenkoartur.g
 ## Features
 
 - **Import/Export**: Convert between .paint files and standard image formats (PNG, JPG)
-- **Canvas Types**: Support for Small (16x16), Large (32x32), Long (32x16), and Tall (16x32) canvases
+- **Canvas Types**: Support for Small (16x16), Large (32x32), Long (32x16), Tall (16x32), and Extra Large (64x64) canvases
 - **NBT Editing**: Edit painting metadata (title, author, name, generation, version) directly in the browser
 - **Multi-Canvas Support**: Split large images across multiple canvases for higher resolution artwork with visual grid preview
 - **Preview**: Real-time preview of conversions with painting information
@@ -68,6 +68,7 @@ The tool allows editing of these .paint file fields:
 | Large | 32x32 | Detailed square art |
 | Long | 32x16 | Landscape/banner art |
 | Tall | 16x32 | Portrait/vertical art |
+| Extra Large | 64x64 | Highest detail square art |
 
 ### NBT Structure
 
