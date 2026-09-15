@@ -20,7 +20,7 @@ Available by [bondarenkoartur.github.io/JoyOfPainting](https://bondarenkoartur.g
 1. Drag and drop or select a .paint file
 2. Choose output format (PNG or JPG)
 3. Select desired image size (native or scaled)
-4. Click "Convert" to download the image
+4. Click "Convert" and choose a folder to save the image into
 
 ### Converting Image to .paint
 
@@ -28,7 +28,7 @@ Available by [bondarenkoartur.github.io/JoyOfPainting](https://bondarenkoartur.g
 2. Choose canvas type that matches your desired aspect ratio
 3. Fill in painting metadata (title, author) - both required together or leave both empty
 4. Select ".paint File" as output format
-5. Click "Convert" to download the .paint file
+5. Click "Convert" and choose a folder to save the .paint file into
 
 ### Multi-Canvas Conversion
 
@@ -38,8 +38,7 @@ For creating high-resolution artwork:
 2. Select canvas type and adjust grid dimensions
 3. Preview shows actual image sections for each canvas
 4. Choose output format (.paint File, PNG Image, or JPG Image)
-5. Click "Generate Multi-Canvas"
-6. Multiple files will be downloaded, each representing a section
+5. Click "Generate Multi-Canvas" and choose a folder to save all the section files into
 
 ### NBT Field Editing
 
@@ -114,11 +113,12 @@ Requires support for:
 - ArrayBuffer
 - TextEncoder/TextDecoder
 - Clipboard API (for paste functionality)
+- File System Access API (for the folder save prompt; browsers without it fall back to individual downloads)
 
 ## Limitations
 
 - Maximum file size depends on browser memory limits
-- Multi-canvas downloads may trigger popup blockers
+- The folder save prompt requires a Chromium-based browser (Chrome, Edge); other browsers fall back to individual file downloads, which may trigger popup blockers for multi-canvas exports
 - NBT parsing is implemented in JavaScript (may be slower than native Python)
 
 ## Related Projects

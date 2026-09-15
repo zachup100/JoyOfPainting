@@ -265,15 +265,46 @@ class JopConverter {
     static downloadFile(data, filename, mimeType = 'application/octet-stream') {
         const blob = new Blob([data], { type: mimeType });
         const url = URL.createObjectURL(blob);
-        
+
         const a = document.createElement('a');
         a.href = url;
         a.download = filename;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-        
+
         URL.revokeObjectURL(url);
+    }
+
+    // Prompt the user to choose a folder, then save one or more files into it.
+    // Falls back to individual downloads in browsers without the File System Access API.
+    // Returns false if the user cancels the folder prompt, true otherwise.
+    static async saveFiles(files) {
+        if (window.showDirectoryPicker) {
+            let dirHandle;
+            try {
+                dirHandle = await window.showDirectoryPicker();
+            } catch (error) {
+                if (error.name === 'AbortError') return false;
+                throw error;
+            }
+
+            for (const file of files) {
+                const fileHandle = await dirHandle.getFileHandle(file.filename, { create: true });
+                const writable = await fileHandle.createWritable();
+                await writable.write(file.data);
+                await writable.close();
+            }
+            return true;
+        }
+
+        for (const file of files) {
+            this.downloadFile(file.data, file.filename, file.mimeType);
+            if (files.length > 1) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+        }
+        return true;
     }
 
     // Canvas to blob helper

@@ -389,10 +389,12 @@ class JopApp {
             const generation = parseInt(this.generationInput.value) || 0;
             const version = parseInt(this.versionInput.value) || 99;
             
+            let fileToSave;
+
             if (format === 'paint') {
                 // Convert to .paint file
                 let paintData;
-                
+
                 if (this.currentPaintData) {
                     // Update metadata
                     paintData = { ...this.currentPaintData };
@@ -408,15 +410,15 @@ class JopApp {
                     paintData.generation = generation;
                     paintData.version = version;
                 }
-                
+
                 const paintFile = JopConverter.createPaintFile(paintData);
                 const filename = `${(title || 'painting').replace(/[^a-zA-Z0-9]/g, '_')}.paint`;
-                JopConverter.downloadFile(paintFile, filename);
-                
+                fileToSave = { data: paintFile, filename, mimeType: 'application/octet-stream' };
+
             } else {
                 // Convert to image
                 let canvas;
-                
+
                 if (this.currentPaintData) {
                     const scale = this.getImageScale();
                     canvas = JopConverter.paintToImage(this.currentPaintData, scale);
@@ -429,15 +431,18 @@ class JopApp {
                     const scale = this.getImageScale();
                     canvas = JopConverter.paintToImage(tempPaintData, scale);
                 }
-                
+
                 const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
                 const blob = await JopConverter.canvasToBlob(canvas, mimeType);
                 const filename = `${(title || 'painting').replace(/[^a-zA-Z0-9]/g, '_')}.${format}`;
-                JopConverter.downloadFile(blob, filename, mimeType);
+                fileToSave = { data: blob, filename, mimeType };
             }
-            
-            this.showSuccess('Conversion completed successfully!');
-            
+
+            const saved = await JopConverter.saveFiles([fileToSave]);
+            if (saved) {
+                this.showSuccess('Conversion completed successfully!');
+            }
+
         } catch (error) {
             this.showError(`Conversion failed: ${error.message}`);
         } finally {
@@ -469,25 +474,26 @@ class JopApp {
                 this.currentImage, canvasType, gridWidth, gridHeight, title, author, generation, version
             );
 
-            // Download all files
+            // Build the list of files to save
+            const filesToSave = [];
             for (const paintFile of paintFiles) {
                 if (format === 'paint') {
                     const data = JopConverter.createPaintFile(paintFile.paintData);
-                    JopConverter.downloadFile(data, paintFile.filename);
+                    filesToSave.push({ data, filename: paintFile.filename, mimeType: 'application/octet-stream' });
                 } else {
                     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
                     const canvas = JopConverter.paintToImage(paintFile.paintData, 1);
                     const blob = await JopConverter.canvasToBlob(canvas, mimeType);
                     const filename = paintFile.filename.replace(/\.paint$/, `.${format}`);
-                    JopConverter.downloadFile(blob, filename, mimeType);
+                    filesToSave.push({ data: blob, filename, mimeType });
                 }
-
-                // Small delay between downloads
-                await new Promise(resolve => setTimeout(resolve, 100));
             }
-            
-            this.showSuccess(`Generated ${paintFiles.length} canvas files successfully!`);
-            
+
+            const saved = await JopConverter.saveFiles(filesToSave);
+            if (saved) {
+                this.showSuccess(`Generated ${paintFiles.length} canvas files successfully!`);
+            }
+
         } catch (error) {
             this.showError(`Multi-canvas conversion failed: ${error.message}`);
         } finally {
