@@ -1,7 +1,7 @@
 # Joy of Painting Web Converter
 
 A web-based tool for converting images to and from the .paint format used by the "Joy of Painting" Minecraft mod.  
-Available by [zachup100.github.io/JoyOfPainting](https://zachup100.github.io/JoyOfPainting/)  
+Available by [zachup100.github.io/JoyOfPainting](https://zachup100.github.io/JoyOfPainting/), forked from [BondarenkoArtur/JoyOfPainting](https://github.com/BondarenkoArtur/JoyOfPainting)  
 
 ## Features
 
