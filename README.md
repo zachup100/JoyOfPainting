@@ -37,8 +37,9 @@ For creating high-resolution artwork:
 1. Upload a large image
 2. Select canvas type and adjust grid dimensions
 3. Preview shows actual image sections for each canvas
-4. Click "Generate Multi-Canvas"
-5. Multiple .paint files will be downloaded, each representing a section
+4. Choose output format (.paint File, PNG Image, or JPG Image)
+5. Click "Generate Multi-Canvas"
+6. Multiple files will be downloaded, each representing a section
 
 ### NBT Field Editing
 

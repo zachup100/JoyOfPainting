@@ -28,6 +28,7 @@ class JopApp {
         
         // Multi-canvas elements
         this.multiCanvasType = document.getElementById('multiCanvasType');
+        this.multiOutputFormat = document.getElementById('multiOutputFormat');
         this.gridWidth = document.getElementById('gridWidth');
         this.gridHeight = document.getElementById('gridHeight');
         this.resolutionInfo = document.getElementById('resolutionInfo');
@@ -462,16 +463,25 @@ class JopApp {
             const version = parseInt(this.versionInput.value) || 99;
             const gridWidth = parseInt(this.gridWidth.value) || 1;
             const gridHeight = parseInt(this.gridHeight.value) || 1;
-            
+            const format = this.multiOutputFormat.value;
+
             const paintFiles = JopConverter.splitImageToMultiCanvas(
                 this.currentImage, canvasType, gridWidth, gridHeight, title, author, generation, version
             );
-            
+
             // Download all files
             for (const paintFile of paintFiles) {
-                const data = JopConverter.createPaintFile(paintFile.paintData);
-                JopConverter.downloadFile(data, paintFile.filename);
-                
+                if (format === 'paint') {
+                    const data = JopConverter.createPaintFile(paintFile.paintData);
+                    JopConverter.downloadFile(data, paintFile.filename);
+                } else {
+                    const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
+                    const canvas = JopConverter.paintToImage(paintFile.paintData, 1);
+                    const blob = await JopConverter.canvasToBlob(canvas, mimeType);
+                    const filename = paintFile.filename.replace(/\.paint$/, `.${format}`);
+                    JopConverter.downloadFile(blob, filename, mimeType);
+                }
+
                 // Small delay between downloads
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
