@@ -327,8 +327,9 @@ class JopApp {
             
             if (this.currentPaintData) {
                 // Preview paint file
-                canvas = JopConverter.paintToImage(this.currentPaintData, 8);
-                this.updatePreviewInfo(this.currentPaintData);
+                const paintData = this.getPaintDataForSelectedType();
+                canvas = JopConverter.paintToImage(paintData, 8);
+                this.updatePreviewInfo(paintData);
             } else if (this.currentImage) {
                 // Preview image as paint
                 const canvasType = parseInt(this.canvasTypeSelect.value);
@@ -397,7 +398,7 @@ class JopApp {
 
                 if (this.currentPaintData) {
                     // Update metadata
-                    paintData = { ...this.currentPaintData };
+                    paintData = { ...this.getPaintDataForSelectedType() };
                     paintData.title = title;
                     paintData.author = author;
                     paintData.generation = generation;
@@ -421,7 +422,7 @@ class JopApp {
 
                 if (this.currentPaintData) {
                     const scale = this.getImageScale();
-                    canvas = JopConverter.paintToImage(this.currentPaintData, scale);
+                    canvas = JopConverter.paintToImage(this.getPaintDataForSelectedType(), scale);
                 } else {
                     // Direct image download with processing
                     const canvasType = parseInt(this.canvasTypeSelect.value);
@@ -507,12 +508,21 @@ class JopApp {
         if (sizeValue === 'native') return 1;
         
         const targetSize = parseInt(sizeValue);
-        const canvasType = this.currentPaintData ? 
-            this.currentPaintData.canvasType : 
-            parseInt(this.canvasTypeSelect.value);
-        
+        const canvasType = parseInt(this.canvasTypeSelect.value);
         const canvasInfo = JopConverter.CANVAS_TYPES[canvasType];
         return Math.floor(targetSize / Math.max(canvasInfo.width, canvasInfo.height));
+    }
+
+    getPaintDataForSelectedType() {
+        const selectedType = parseInt(this.canvasTypeSelect.value);
+        const paint = this.currentPaintData;
+        if (paint.canvasType === selectedType) return paint;
+
+        const source = JopConverter.paintToImage(paint, 1);
+        const resized = JopConverter.imageToPaint(source, selectedType, paint.title, paint.author, paint.name);
+        resized.generation = paint.generation;
+        resized.version = paint.version;
+        return resized;
     }
 
     showError(message) {
