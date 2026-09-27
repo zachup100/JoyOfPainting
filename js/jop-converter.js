@@ -5,7 +5,8 @@ class JopConverter {
         1: { name: 'Large', width: 32, height: 32 },
         2: { name: 'Long', width: 32, height: 16 },
         3: { name: 'Tall', width: 16, height: 32 },
-        4: { name: 'Extra Large', width: 64, height: 64 }
+        4: { name: 'Extra Large', width: 64, height: 64 },
+        5: { name: 'Extra Tall', width: 48, height: 64 }
     };
 
     static ROOT_UUID = "d1ebe29f-f4e9-4572-83cd-8b2cdbfc2420";
