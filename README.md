@@ -38,7 +38,8 @@ For creating high-resolution artwork:
 2. Select canvas type and adjust grid dimensions
 3. Preview shows actual image sections for each canvas
 4. Choose output format (.paint File, PNG Image, or JPG Image)
-5. Click "Generate Multi-Canvas" and choose a folder to save all the section files into
+5. Optionally enter a file name; files are saved numbered in row order, e.g. `Garchomp-1.png`, `Garchomp-2.png`, `Garchomp-3.png` (leave empty for the default names)
+6. Click "Generate Multi-Canvas" and choose a folder to save all the section files into
 
 ### NBT Field Editing
 

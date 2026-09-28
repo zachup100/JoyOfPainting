@@ -29,6 +29,7 @@ class JopApp {
         // Multi-canvas elements
         this.multiCanvasType = document.getElementById('multiCanvasType');
         this.multiOutputFormat = document.getElementById('multiOutputFormat');
+        this.multiFileName = document.getElementById('multiFileName');
         this.gridWidth = document.getElementById('gridWidth');
         this.gridHeight = document.getElementById('gridHeight');
         this.resolutionInfo = document.getElementById('resolutionInfo');
@@ -470,6 +471,7 @@ class JopApp {
             const gridWidth = parseInt(this.gridWidth.value) || 1;
             const gridHeight = parseInt(this.gridHeight.value) || 1;
             const format = this.multiOutputFormat.value;
+            const baseName = this.multiFileName.value.replace(/[\\/:*?"<>|]/g, '_').trim();
 
             const paintFiles = JopConverter.splitImageToMultiCanvas(
                 this.currentImage, canvasType, gridWidth, gridHeight, title, author, generation, version
@@ -477,15 +479,19 @@ class JopApp {
 
             // Build the list of files to save
             const filesToSave = [];
-            for (const paintFile of paintFiles) {
+            for (const [index, paintFile] of paintFiles.entries()) {
+                const extension = format === 'paint' ? 'paint' : format;
+                const filename = baseName
+                    ? `${baseName}-${index + 1}.${extension}`
+                    : paintFile.filename.replace(/\.paint$/, `.${extension}`);
+
                 if (format === 'paint') {
                     const data = JopConverter.createPaintFile(paintFile.paintData);
-                    filesToSave.push({ data, filename: paintFile.filename, mimeType: 'application/octet-stream' });
+                    filesToSave.push({ data, filename, mimeType: 'application/octet-stream' });
                 } else {
                     const mimeType = format === 'jpg' ? 'image/jpeg' : 'image/png';
                     const canvas = JopConverter.paintToImage(paintFile.paintData, 1);
                     const blob = await JopConverter.canvasToBlob(canvas, mimeType);
-                    const filename = paintFile.filename.replace(/\.paint$/, `.${format}`);
                     filesToSave.push({ data: blob, filename, mimeType });
                 }
             }
